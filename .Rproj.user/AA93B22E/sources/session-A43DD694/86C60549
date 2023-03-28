@@ -3,7 +3,7 @@
     "path": "~/github/packages/mspacman/R/complete_trips_curves.R",
     "project_path": "R/complete_trips_curves.R",
     "type": "r_source",
-    "hash": "4153407439",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1680009646818.0,
@@ -12,8 +12,8 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "102,2",
-        "scrollLine": "89"
+        "cursorPosition": "14,0",
+        "scrollLine": "0"
     },
     "folds": "",
     "lastKnownWriteTime": 1680011954,

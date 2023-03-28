@@ -1,0 +1,39 @@
+library(data.table)
+library(magrittr)
+library(bigrquery)
+library(dbplyr)
+library(stringr)
+library(dplyr)
+
+# Block groups in Benton County, OR
+benton_bg = "https://lehd.ces.census.gov/data/lodes/LODES7/or/or_xwalk.csv.gz" %>%
+  fread(select="bgrp") %>%
+  .[, bgrp] %>%
+  .[str_detect(., "^41003")] %>%
+  as.character()
+
+# Authenticate BQ account
+bq_auth(scopes = "https://www.googleapis.com/auth/bigquery")
+
+# Connect to the BigQuery northwest 2021 trips table
+con = dbConnect(
+  bigquery(),
+  project = "replica-customer",
+  dataset = "northwest"
+)
+dbListTables(con)
+trip_con = tbl(con, "northwest_2021_Q4_thursday_trip")
+
+# Grab the start and end time for all trips originating in our zone
+benton = trip_con %>%
+  filter(origin_bgrp %in% benton_bg) %>%
+  select(origin_bgrp, start_time, end_time) %>%
+  collect() %>%
+  data.table() %>%
+  .[, start_time := as.numeric(start_time)] %>%
+  .[, end_time := as.numeric(end_time)] %>%
+  .[order(origin_bgrp, start_time)] %>%
+  setnames(old="origin_bgrp", new="GEOID")
+
+# Use this data!
+usethis::use_data(DATASET, overwrite=TRUE)

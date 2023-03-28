@@ -1,0 +1,82 @@
+---
+title: "basic-usage"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{basic-usage}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mspacman)
+```
+
+`mspacman` supports the calculation of "leveled-up" multimodal systems productivity (MSP) metrics by reflecting observed [or simulated] trip record travel time data. The basic building block of these metrics is a *complete trips curve*, which defines how many trips have been completed by a given point in a day. As we'll see later, observing statistics along this curve allows us to draw inference about system productivity.
+
+### The complete trips curve
+
+The complete trips curve is the basis for our MSP metrics, but how do we build it? First, consider assessing the completeness of just a single trip. Imagine this trip begins at 9:00am and ends at 9:10am. The calculations in this model define completeness as the share of total travel time completed. Of course, this is not a perfect assumption -- especially for motorized travel, some stretches may be quicker than others -- but it is a reasonable one to make given usual data constraints (a more detailed calculation would require trip path and speed information, which is very rare to find). So, how do we assess define completeness of our imagined trip?
+
+- Before and exactly at 9am, this trip is totally incomplete, because it hasn't started yet! Its "completeness" is thus 0. 
+
+- At 9:01am, this trip is partially complete; in particular, 1 of the 10 trips minutes has been completed. Completeness is thus 1/10, or 0.1. 
+
+- At 9:02am, completeness is 0.2, using the same logic described above. This logic will also apply at 9:03am, 9:04am, and all the way up to 9:09am.
+
+- At 9:10am, this trip has finished. Its completeness is now 1.
+
+- At 9:11am, and for the rest of the day, the trip remains fully complete. The completeness of 1 persists for the remainder of the day.
+
+This logic can be applied to each individual trip in a collection to understand how much of each trip has been completed at any given minute. Getting a complete trips curve is then as simple as (1) summing trip completeness across each minute of the day, and (2) applying a function constructor.
+
+Building the complete trips curve in `mspacman` is split into two functions, covering the two components defined above. The function `completed_trips_by_minute` calculates completed trips by minute for a collection of 1 or more trips. `complete_trips_curve` applies the function constructor: a monotone Hermite spline according to the method of Fritsch and Carlson (Mono-H-FC).
+
+How about we see this in action? We'll use our sample data from Benton County, OR, and look at the place I used to live! Note that `completed_trips_by_minute` expects start and end times in integer seconds ($0 < t < 86400$); the sample data in this package is already in seconds, but you may need to convert your own data to this format.
+
+```{r Building the complete trips curve}
+# Subset to one block group, for now
+chintimini_park = benton %>%
+  .[GEOID == "410030011011"]
+
+# Calculate completed trips by minute
+ctbm = completed_trips_by_minute(
+  start_times = chintimini_park$start_time,
+  end_times = chintimini_park$end_time
+)
+
+# Build the completed trips curve
+ctc = complete_trips_curve(
+  x = ctbm,
+  percent = FALSE
+)
+```
+
+A few notes about the completed trips curve are worth mentioning:
+
+- The spline is necessary to make the complete trip curve differentiable. Technically, the observed completed trips by minute is sufficient to define a complete trips curve, but corners will exist at every whole minute unless some sort of smoothing is applied. However, because the spline is an interpolator, we are guaranteed to pass exactly through all observed points (the completed trips by minute). In addition, any induced error is likely trivial, since we already have observed data at every minute; in other words, we're only interpolating at the level of seconds. 
+
+- The use of the Mono-H-FC spline guarantees that the complete trips curve is non-decreasing. This ensures we're never losing completed trips.
+
+- The `percent` option in the complete trips curve allows for a re-expression of complete trips as a "share of daily trips completed" (as opposed to absolute magnitude of completed trips). This option allows for the production of imminently comparable curves between areas with different magnitudes.
+
+### Plotting the complete trips curve
+
+The complete trips curve, as output by `complete_trips_curve`, is just a function. To observe it, use `plot_complete_trips_curve`:
+
+```{r Plot complete trips curve}
+plot_complete_trips_curve(
+  complete_trips_curve = ctc
+)
+```
+
+### Productivity
+
+
+
