@@ -1,0 +1,26 @@
+{
+    "id": "38B28362",
+    "path": "~/github/packages/mspacman/R/metrics.R",
+    "project_path": "R/metrics.R",
+    "type": "r_source",
+    "hash": "14287043",
+    "contents": "",
+    "dirty": false,
+    "created": 1680009651155.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "17,5",
+        "scrollLine": "11"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1680012182,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1680012182611,
+    "read_only": false,
+    "read_only_alternatives": []
+}
