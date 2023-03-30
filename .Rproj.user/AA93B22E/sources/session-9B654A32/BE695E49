@@ -3,7 +3,7 @@
     "path": "~/github/packages/mspacman/vignettes/basic-usage.Rmd",
     "project_path": "vignettes/basic-usage.Rmd",
     "type": "r_markdown",
-    "hash": "4244887146",
+    "hash": "2407791072",
     "contents": "",
     "dirty": false,
     "created": 1680023739002.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "16,83",
-        "scrollLine": "8"
+        "cursorPosition": "36,239",
+        "scrollLine": "35"
     },
     "folds": "",
-    "lastKnownWriteTime": 1680198405,
+    "lastKnownWriteTime": 1680199241,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1680198405904,
+    "last_content_update": 1680199241976,
     "read_only": false,
     "read_only_alternatives": []
 }

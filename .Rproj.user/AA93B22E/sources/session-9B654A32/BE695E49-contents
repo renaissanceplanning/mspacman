@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-`mspacman` supports the calculation of "leveled-up" multimodal systems productivity (MSP) metrics by reflecting observed [or simulated] trip record travel time data. The basic building block of these metrics is a *complete trips curve*, which defines how many trips have been completed by a given point in a day. As we'll see later, observing statistics along this curve allows us to draw inference about system productivity.
+`mspacman` supports the calculation of "leveled-up" multimodal systems performance (MSP) metrics by reflecting observed [or simulated] trip record travel time data. The basic building block of these metrics is a *complete trips curve*, which defines how many trips have been completed by a given point in a day. As we'll see later, observing statistics along this curve allows us to draw inference about system productivity.
 
 ### The complete trips curve
 
@@ -34,7 +34,7 @@ This logic can be applied to each individual trip in a collection to understand 
 
 Building the complete trips curve in `mspacman` is split into two functions, covering the two components defined above. The function `completed_trips_by_minute` calculates completed trips by minute for a collection of 1 or more trips. `complete_trips_curve` applies the function constructor: a monotone Hermite spline according to the method of Fritsch and Carlson (Mono-H-FC).
 
-How about we see this in action? We'll use our sample data from Benton County, OR, and look at the place I used to live: Chintimini Park. Note that `completed_trips_by_minute` expects start and end times in integer seconds ($0 < t < 86400$); the sample data in this package is already in seconds, but you may need to convert your own data to this format.
+How about we see this in action? We'll use our sample data from Benton County, OR, and look at the place I used to live: Chintimini Park. Note that `completed_trips_by_minute` expects start and end times in integer seconds (0 < $t$ < 86400); the sample data in this package is already in seconds, but you may need to convert your own data to this format.
 
 ```{r Building the complete trips curve}
 # Load mspacman
@@ -76,9 +76,10 @@ plot_complete_trips_curve(
 
 ### Productivity and efficiency
 
-FHWA defines MSP in the following way (for more information see [their innovation and reseach plan](https://ops.fhwa.dot.gov/publications/fhwahop18085/index.htm)):
+FHWA has this to say about existing development of MSP metrics (for more information see [their innovation and reseach plan](https://ops.fhwa.dot.gov/publications/fhwahop18085/index.htm)):
 
-> MSP is based on the classic definition of productivity: the ratio of inputs to outputs in the production process. For the multimodal transportation system completed person trips are production outputs and network travel times, or network minutes, are production inputs. The MSP score is the number of completed person trips per network minute. The higher the score, the higher the productivity of the system.
+> The initial literature review found no "ideal" or universal multimodal transportation system performance measure or approach. It did uncover a high level of interest in pursuing, defining and testing such a method, however. 
+> Multimodal system productivity (MSP) emerged as the "ideal" system measure. MSP is based on the classic definition of productivity: the ratio of inputs to outputs in the production process. For the multimodal transportation system, completed person trips are production outputs and network travel times, or network minutes, are production inputs. The MSP score is the number of completed person trips per network minute. The higher the score, the higher the productivity of the system.MSP is based on the classic definition of productivity: the ratio of inputs to outputs in the production process. For the multimodal transportation system completed person trips are production outputs and network travel times, or network minutes, are production inputs. The MSP score is the number of completed person trips per network minute. The higher the score, the higher the productivity of the system.
 
 Though sensible, the "completed trips per network minute" approach has a few key drawbacks:
 
@@ -111,7 +112,7 @@ plot_productivity(
 
 As you can see, productivity for trips originating in the Chinitimini Park area hits its peaks around 7:30am, 1:30pm, and 3:30pm, but remains relatively high throughout the course of the day. This is consistent with the fact that this neighborhood is primarily college students; students are more likely to take mid-day trips to class, and varying class schedules means that trips are occurring consistently throughout the day. Note that the use of `smooth=TRUE` in the call to `plot_productivity` allows us to observe a general trend amidst the noisines of the observed data. 
 
-Point 2 above is addressed by explicitly accounting for the rate at which trips are completed in a time range. We refer to this as *efficiency*, which is calculated by taking the complete trips function average across a time range (the function integral divided by the width of the range). This is similar in spirit to FHWA's measure of MSP, but accounts for *all completed trip values in a time range, not just the first and last*. It's interpretation is "the number of newly completed trips would we expect to observe at a random time between $t1$ and $t2$."
+Point 2 above is addressed by explicitly accounting for the rate at which trips are completed in a time range. We refer to this as *efficiency*, which is calculated by taking the complete trips function average across a time range (the function integral divided by the width of the range). This is similar in spirit to FHWA's measure of MSP, but accounts for *all completed trip values in a time range, not just the first and last*. It's interpretation is "the number of newly completed trips would we expect to observe at a random time between $t_1$ and $t_2$."
 
 Again, we'll use Chintimini Park to explore efficiency.
 

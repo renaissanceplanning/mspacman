@@ -10,8 +10,8 @@
 A data.table with 364,091 rows and 3 columns:
 \describe{
 \item{GEOID}{block group ID}
-\item{start_time}{trip start time (in minutes)}
-\item{end_time}{trip end time (in minutes)}
+\item{start_time}{trip start time (in seconds)}
+\item{end_time}{trip end time (in seconds)}
 ...
 }
 }
