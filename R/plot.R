@@ -99,11 +99,11 @@ plot_efficiency = function(complete_trips_curve, window=1, smooth=TRUE){
                        limits=c(0,xmax),
                        labels=seq(0,24,2),
                        expand=c(0.025,0.025)) +
-    scale_y_continuous(name="Average observed completed trips in window",
+    scale_y_continuous(name="Efficiency",
                        # breaks=0:ymax,
                        limits=c(0,ymax),
-                       expand=c(0.025,0.025))
-  labs(title=paste0("Efficiency (within ", window, " minute windows)"))
+                       expand=c(0.025,0.025)) +
+    labs(title=paste0("Efficiency (within ", window, " minute windows)"))
   if(smooth==TRUE){
     gg + geom_smooth(aes(x=x, y=y))
   } else{
